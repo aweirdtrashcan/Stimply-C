@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "glfw3.h": "c",
+        "vulkan_types.inl": "c"
+    }
+}
