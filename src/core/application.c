@@ -47,7 +47,7 @@ uint8_t application_start(
 
     uint64_t renderer_size = renderer_get_state_size();
     state->renderer_state = malloc(renderer_size);
-    renderer_initialize(state->renderer_state, state->application_name, state->width, state->height);
+    renderer_initialize(state->renderer_state, state->application_name, state->width, state->height, state->window);
 
     return 1;
 }
@@ -78,4 +78,9 @@ void check_key_state(uint32_t key, GLFWwindow* window) {
     if (glfwGetKey(window, key) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, 1);
     }
+}
+
+void* application_get_window(void* app_state) {
+    application_state* state = app_state;
+    return state->window;
 }

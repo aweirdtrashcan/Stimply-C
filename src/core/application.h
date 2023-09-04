@@ -12,3 +12,5 @@ uint8_t application_start(
 uint8_t application_run(void* application_state);
 
 void application_destroy(void* application_state);
+
+void* application_get_window(void* application_state);
