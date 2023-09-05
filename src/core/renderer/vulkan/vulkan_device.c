@@ -4,7 +4,28 @@
 #include <stdio.h>
 #include <string.h>
 
+static inline uint8_t vulkan_create_debugger(vulkan_renderer* renderer);
+static inline void vulkan_destroy_debugger(vulkan_renderer* renderer);
+
+static VkBool32 VKAPI_PTR _vkDebugUtilsMessengerCallbackEXT(
+    VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
+    const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
+    void*                                            pUserData
+);
+
 uint8_t vulkan_device_create(vulkan_renderer* renderer) {
+    // Create the debugger
+    if (renderer->vulkan_messenger) {
+        // sorry the long message ;-;
+        // TODO: Fix this, i guess?
+        const char* error_msg = "***WARNING***: vulkan_device_create is being called and creating a Vulkan Messenger Debugger, but renderer->vulkan_messenger is NOT null. Make sure renderer->vulkan_messenger is null so multiple objects are not constructed in the same variable.";
+        printf("%s\n", error_msg);
+    }
+    if (!vulkan_create_debugger(renderer)) {
+        return 0;
+    }
+
     // Choose physical device
     uint32_t physical_devices_count = 0;
     VK_CHECK(vkEnumeratePhysicalDevices(renderer->instance, &physical_devices_count, 0));
@@ -178,6 +199,7 @@ uint8_t vulkan_device_create(vulkan_renderer* renderer) {
 
     printf("Vulkan device created successfully!\n");
 
+    printf("Acquiring logical device queues...\n");
 
     vkGetDeviceQueue(
         renderer->device.logical_device,
@@ -200,10 +222,14 @@ uint8_t vulkan_device_create(vulkan_renderer* renderer) {
         &renderer->device.queues.present_queue
     );
 
+    printf("Logical device queues acquired successfully!\n");
+
     return 1;
 }
 
 void vulkan_device_destroy(vulkan_renderer* renderer) {
+
+    vulkan_destroy_debugger(renderer);
 
     if (renderer->device.logical_device) {
         memset(&renderer->device.queues, 0, sizeof(renderer->device.queues));
@@ -221,4 +247,57 @@ void vulkan_device_destroy(vulkan_renderer* renderer) {
     memset(&renderer->device.features, 0, sizeof(renderer->device.features));
 
     printf("Vulkan device destroyed successfully!\n");
+}
+
+uint8_t vulkan_create_debugger(vulkan_renderer* renderer) {
+    VkDebugUtilsMessengerCreateInfoEXT debugger_create_info = { VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT };
+    debugger_create_info.flags = 0;
+    debugger_create_info.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
+                                           VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
+                                           VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT;
+    debugger_create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
+                                       VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT |
+                                       VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+    debugger_create_info.pfnUserCallback = _vkDebugUtilsMessengerCallbackEXT;
+    debugger_create_info.pNext = 0;
+    debugger_create_info.pUserData = 0;
+    
+    PFN_vkCreateDebugUtilsMessengerEXT func =
+        (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(renderer->instance, "vkCreateDebugUtilsMessengerEXT");
+
+    if (func == 0) {
+        printf("Failed to create Vulkan Debug Utils Messenger...\n");
+        return 0;
+    }
+
+    VK_CHECK(func(renderer->instance, &debugger_create_info, 0, &renderer->vulkan_messenger));
+
+    if (renderer->vulkan_messenger) {
+        printf("Vulkan debugger created successfully!\n");
+    }
+
+    return 1;
+}
+
+void vulkan_destroy_debugger(vulkan_renderer* renderer) {
+    if (renderer->vulkan_messenger) {
+        printf("Destroying vulkan debugger...\n");
+        PFN_vkDestroyDebugUtilsMessengerEXT func = 
+            (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(renderer->instance, "vkDestroyDebugUtilsMessengerEXT");
+
+        if (func) {
+            func(renderer->instance, renderer->vulkan_messenger, 0);
+            renderer->vulkan_messenger = 0;
+        }
+    }
+}
+
+static VkBool32 VKAPI_PTR _vkDebugUtilsMessengerCallbackEXT(
+    VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
+    const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
+    void*                                            pUserData
+) {
+    printf("%s\n", pCallbackData->pMessage);
+    return VK_FALSE;
 }

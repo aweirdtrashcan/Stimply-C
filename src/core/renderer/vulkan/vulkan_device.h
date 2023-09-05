@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vulkan_types.inl"
+#include "vulkan_types.h"
 
 uint8_t vulkan_device_create(vulkan_renderer* renderer);
 

@@ -35,4 +35,6 @@ typedef struct vulkan_renderer {
     VkSurfaceKHR surface;
 
     vulkan_device device;
+
+    VkDebugUtilsMessengerEXT vulkan_messenger;
 } vulkan_renderer;
