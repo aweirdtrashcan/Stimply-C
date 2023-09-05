@@ -36,9 +36,9 @@ uint8_t renderer_shutdown(void* allocated_memory) {
     
     if (state->vulkan_state) {
         free(state->vulkan_state);
+        state->vulkan_state = 0;
     }
+    state->window = 0;
 
-    state->vulkan_state = 0;
-    
     return 1;
 }

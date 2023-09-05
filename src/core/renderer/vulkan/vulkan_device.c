@@ -2,6 +2,7 @@
 
 #include <alloca.h>
 #include <stdio.h>
+#include <string.h>
 
 uint8_t vulkan_device_create(vulkan_renderer* renderer) {
     // Choose physical device
@@ -170,7 +171,34 @@ uint8_t vulkan_device_create(vulkan_renderer* renderer) {
         &renderer->device.logical_device
     ));
 
+    if (renderer->device.logical_device == 0) {
+        printf("Vulkan logical device was null.\n");
+        return 0;
+    }
+
     printf("Vulkan device created successfully!\n");
+
+
+    vkGetDeviceQueue(
+        renderer->device.logical_device,
+        renderer->device.queues.graphics_queue_index,
+        0,
+        &renderer->device.queues.graphics_queue
+    );
+
+    vkGetDeviceQueue(
+        renderer->device.logical_device,
+        renderer->device.queues.transfer_queue_index,
+        0,
+        &renderer->device.queues.transfer_queue
+    );
+
+    vkGetDeviceQueue(
+        renderer->device.logical_device,
+        renderer->device.queues.present_queue_index,
+        0,
+        &renderer->device.queues.present_queue
+    );
 
     return 1;
 }
@@ -178,10 +206,19 @@ uint8_t vulkan_device_create(vulkan_renderer* renderer) {
 void vulkan_device_destroy(vulkan_renderer* renderer) {
 
     if (renderer->device.logical_device) {
+        memset(&renderer->device.queues, 0, sizeof(renderer->device.queues));
         printf("Destroying vulkan device...\n");
         vkDestroyDevice(renderer->device.logical_device, 0);
+        renderer->device.logical_device = 0;
     }
 
-    printf("Vulkan device destroyed successfully!\n");
+    renderer->device.physical_device = 0;
+    memset(&renderer->device.memory, 0, sizeof(renderer->device.memory));
+    if (renderer->device.properties.pNext) {
+        memset(renderer->device.properties.pNext, 0, sizeof(VkPhysicalDeviceDriverProperties));
+    }
+    memset(&renderer->device.properties, 0, sizeof(renderer->device.properties));
+    memset(&renderer->device.features, 0, sizeof(renderer->device.features));
 
+    printf("Vulkan device destroyed successfully!\n");
 }

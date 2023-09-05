@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan.h>
 
-#define VK_CHECK(res) { if ((res) != VK_SUCCESS) { printf("%s%s\n", "Vulkan failure at: ", #res); } }
+#define VK_CHECK(res) { VkResult __macro__res_ = res; if (__macro__res_ != VK_SUCCESS) printf("Vulkan failure at: %s\n", #res); }
 
 typedef struct vulkan_queues {
     VkQueue present_queue;

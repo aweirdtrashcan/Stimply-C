@@ -30,6 +30,10 @@ uint8_t vulkan_renderer_initialize(void* vulkan_renderer_state, const char* appl
     vulkan_renderer* state = vulkan_renderer_state;
     memset(state, 0, sizeof(vulkan_renderer));
 
+    state->application_name = application_name;
+    state->width = width;
+    state->height = height;
+
     VkApplicationInfo app_info = {VK_STRUCTURE_TYPE_APPLICATION_INFO};
     app_info.pApplicationName = application_name;
     app_info.pEngineName = "Stimply Engine";
@@ -135,4 +139,5 @@ void vulkan_renderer_destroy(void* vulkan_renderer_state) {
 
     printf("%s\n", "Destroying Vulkan instance...");
     vkDestroyInstance(state->instance, 0);
+    memset(state, 0, sizeof(*state));
 }

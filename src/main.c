@@ -11,5 +11,7 @@ int main(void) {
 
     application_destroy(app_state);
 
+    app_state = 0;
+
     return 0;
 }

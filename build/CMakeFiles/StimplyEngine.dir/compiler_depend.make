@@ -151,8 +151,10 @@ CMakeFiles/StimplyEngine.dir/src/core/renderer/vulkan/vulkan_device.c.o: /home/d
   /usr/include/bits/types/__FILE.h \
   /usr/include/bits/types/__fpos64_t.h \
   /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__locale_t.h \
   /usr/include/bits/types/__mbstate_t.h \
   /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/locale_t.h \
   /usr/include/bits/types/struct_FILE.h \
   /usr/include/bits/typesizes.h \
   /usr/include/bits/wchar.h \
@@ -164,6 +166,8 @@ CMakeFiles/StimplyEngine.dir/src/core/renderer/vulkan/vulkan_device.c.o: /home/d
   /usr/include/stdc-predef.h \
   /usr/include/stdint.h \
   /usr/include/stdio.h \
+  /usr/include/string.h \
+  /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
   /usr/include/vk_video/vulkan_video_codec_h264std.h \
   /usr/include/vk_video/vulkan_video_codec_h264std_decode.h \
