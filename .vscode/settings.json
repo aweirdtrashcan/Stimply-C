@@ -1,7 +1,7 @@
 {
     "files.associations": {
         "glfw3.h": "c",
-        "vulkan_types.inl": "c"
+        "vulkan_swapchain.h": "c"
     },
     "cmake.configureOnOpen": false
 }

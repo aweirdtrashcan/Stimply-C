@@ -25,6 +25,14 @@ typedef struct vulkan_device {
     vulkan_queues queues;
 } vulkan_device;
 
+typedef struct vulkan_swapchain {
+    VkSwapchainKHR handle;
+    uint32_t image_count;
+
+    VkImage* images;
+    VkImageView* views;
+} vulkan_swapchain;
+
 typedef struct vulkan_renderer {
     /* Application State */
     const char* application_name;
@@ -37,4 +45,6 @@ typedef struct vulkan_renderer {
     vulkan_device device;
 
     VkDebugUtilsMessengerEXT vulkan_messenger;
+
+    vulkan_swapchain swapchain;
 } vulkan_renderer;

@@ -1,6 +1,7 @@
 #include "vulkan_renderer.h"
 #include "vulkan_device.h"
 #include "../../application.h"
+#include "vulkan_swapchain.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -118,7 +119,7 @@ uint8_t vulkan_renderer_initialize(void* vulkan_renderer_state, const char* appl
     VK_CHECK(glfwCreateWindowSurface(state->instance, window, 0, &state->surface));
 
     if (!vulkan_device_create(state)) {
-        printf("%s\n", "Failed to create Vulkan device.");
+        printf("Failed to create Vulkan device.\n");
         return 0;
     }
 
@@ -126,6 +127,11 @@ uint8_t vulkan_renderer_initialize(void* vulkan_renderer_state, const char* appl
     free(temp->requested_layer_extensions);
     free(temp);
     temp = 0;
+
+    if (!vulkan_swapchain_create(state, &state->swapchain)) {
+        printf("Failed to create Vulkan swapchain.\n");
+        return 0;
+    }
 
     printf("Vulkan renderer initialized successfully\n");
 
@@ -135,6 +141,8 @@ uint8_t vulkan_renderer_initialize(void* vulkan_renderer_state, const char* appl
 void vulkan_renderer_destroy(void* vulkan_renderer_state) {
     vulkan_renderer* state = vulkan_renderer_state;
     
+    vulkan_swapchain_destroy(state, &state->swapchain);
+
     vulkan_device_destroy(state);
 
     printf("%s\n", "Destroying Vulkan instance...");

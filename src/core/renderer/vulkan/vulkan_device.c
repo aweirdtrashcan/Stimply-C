@@ -1,4 +1,4 @@
-#include "vulkan_types.inl"
+#include "vulkan_types.h"
 
 #include <alloca.h>
 #include <stdio.h>
